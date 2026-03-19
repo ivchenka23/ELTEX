@@ -1,0 +1,15 @@
+mkdir -p ~/D1/D2/D3
+touch /D1/D2/file.txt
+echo "NIKITA" > D1/D2/file.txt
+ln -s D1/D2/file.txt ~/D1/D3/soft_link.txt
+ln D1/D2/file.txt ~/D1/D3/hard_link.txt
+mv D1/D2/file.txt D1
+cat D1/D2/D3/soft_link.txt
+cat D1/D2/D3/hard_link.txt
+rm -r D1/D2
+find / -type f -size +20M 2>/dev/null > ~/${USER}_part3_gt50M.log
+du -h $(cat ${USER}_part3_gt50M.log)
+find ~ -type f -mtime -1
+which find
+file /usr/bin/find
+file /boot/initrd.img*
