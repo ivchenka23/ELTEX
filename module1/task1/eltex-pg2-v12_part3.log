@@ -13,3 +13,4 @@ find ~ -type f -mtime -1
 which find
 file /usr/bin/find
 file /boot/initrd.img*
+Я сделал лабораторную работу.
