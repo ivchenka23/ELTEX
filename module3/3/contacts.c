@@ -10,52 +10,39 @@ int count = 0;
 
 void loadContacts() {
     int fd = open(FILE_PATH, O_RDONLY);
-    if (fd == -1) {
+    if (fd < 0) {
+        printf("Файл не найден (создаётся новый).\n");
         count = 0;
         return;
     }
 
-    ssize_t bytes = read(fd, &count, sizeof(int));
-    if (bytes != sizeof(int)) {
-        close(fd);
-        count = 0;
-        return;
+    count = 0;
+    while (count < MAX_CONTACTS) {
+        ssize_t bytes = read(fd, &contacts[count], sizeof(Contact));
+        if (bytes == 0) break;
+        if (bytes < (ssize_t)sizeof(Contact)) {
+            fprintf(stderr, "Ошибка чтения записи #%d\n", count);
+            break;
+        }
+        count++;
     }
-
-    if (count < 0 || count > MAX_CONTACTS) {
-        close(fd);
-        count = 0;
-        return;
-    }
-
-    bytes = read(fd, contacts, count * sizeof(Contact));
-    if (bytes != (ssize_t)(count * sizeof(Contact))) {
-        count = 0;
-    }
-
     close(fd);
 }
 
 void saveContacts() {
     int fd = open(FILE_PATH, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-    if (fd == -1) {
+    if (fd < 0) {
         perror("Ошибка открытия файла для записи");
         return;
     }
 
-    ssize_t bytes = write(fd, &count, sizeof(int));
-    if (bytes != sizeof(int)) {
-        close(fd);
-        return;
-    }
-
-    if (count > 0) {
-        bytes = write(fd, contacts, count * sizeof(Contact));
-        if (bytes != (ssize_t)(count * sizeof(Contact))) {
-            perror("Ошибка записи контактов");
+    for (int i = 0; i < count; i++) {
+        ssize_t bytes = write(fd, &contacts[i], sizeof(Contact));
+        if (bytes < (ssize_t)sizeof(Contact)) {
+            perror("Ошибка записи");
+            break;
         }
     }
-
     close(fd);
 }
 
