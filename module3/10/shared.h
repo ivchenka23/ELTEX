@@ -15,9 +15,6 @@ typedef struct {
     int count;
     int min_val;
     int max_val;
-    int producer_done;  
-    int consumer_done;   
 } SharedData;
 
-#endif 
-
+#endif
