@@ -1,13 +1,20 @@
-CC      = gcc
-CFLAGS  = -Wall -Wextra -std=c11 -O2
-TARGET  = chat
+CC = gcc
+CFLAGS = -Wall -Wextra -std=c11 -D_POSIX_C_SOURCE=200809L -D_DEFAULT_SOURCE
+LDFLAGS = -lpthread
+TARGET = udp_chat
 
-.PHONY: all clean
+SRCS = main.c threads.c
+OBJS = $(SRCS:.c=.o)
 
 all: $(TARGET)
 
-$(TARGET): chat.c udp_chat.h
-	$(CC) $(CFLAGS) -o $@ $<
+$(TARGET): $(OBJS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
+
+%.o: %.c udp_chat.h
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f $(TARGET)
+	rm -f $(OBJS) $(TARGET)
+
+.PHONY: all clean
